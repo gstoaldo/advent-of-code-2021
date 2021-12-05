@@ -1,13 +1,27 @@
+from operator import attrgetter
+
+
 class Board:
     def __init__(self, data):
         self.board = [[n for n in row] for row in data]
         self.marks = [[False for _ in row] for row in data]
+        self.is_bingo = False
+        self.bingo_number = None
+        self.round = 0
 
-    def mark(self, call_number):
+    def mark(self, call_number, round=0):
+        if self.is_bingo:
+            return
+
         for i, row in enumerate(self.board):
             for j, value in enumerate(row):
                 if value == call_number:
                     self.marks[i][j] = True
+
+        if self.bingo():
+            self.is_bingo = True
+            self.bingo_number = call_number
+            self.round = round
 
     def bingo(self):
         for i, _ in enumerate(self.board):
@@ -27,7 +41,7 @@ class Board:
         )
 
 
-def calc_number_calls(number_calls, boards_data):
+def calc_first_bingo(number_calls, boards_data):
     boards = [Board(data) for data in boards_data]
 
     for number_call in number_calls:
@@ -39,8 +53,25 @@ def calc_number_calls(number_calls, boards_data):
     return False
 
 
-def calc_score(number_calls, boards_data):
-    last_call, unmarked_sum = calc_number_calls(number_calls, boards_data)
+def calc_last_bingo(number_calls, boards_data):
+    boards = [Board(data) for data in boards_data]
+
+    for round, number_call in enumerate(number_calls):
+        for board in boards:
+            board.mark(number_call, round)
+
+        not_bingo_boards = [board for board in boards if not board.bingo()]
+
+        if len(not_bingo_boards) == 0:
+            break
+
+    last_board = max(boards, key=attrgetter("round"))
+
+    return last_board.bingo_number, last_board.unmarked_sum()
+
+
+def calc_score(number_calls, boards_data, func):
+    last_call, unmarked_sum = func(number_calls, boards_data)
 
     return last_call * unmarked_sum
 
@@ -69,11 +100,13 @@ def read_file(filename):
 def solve(filename):
     calls, boards = read_file(filename)
 
-    part1_answer = calc_score(calls, boards)
+    part1_answer = calc_score(calls, boards, calc_first_bingo)
+    part2_answer = calc_score(calls, boards, calc_last_bingo)
 
-    return part1_answer
+    return part1_answer, part2_answer
 
 
 if __name__ == "__main__":
-    part1_answer = solve("input.txt")
+    part1_answer, part2_answer = solve("input.txt")
     print(f"part1: {part1_answer}")
+    print(f"part2: {part2_answer}")
