@@ -1,4 +1,3 @@
-from os import read
 import pytest
 from main import *
 
@@ -24,10 +23,29 @@ from main import *
                 (1, 3),
             ],
         ),
+        (
+            (1, 1),
+            (3, 3),
+            [
+                (1, 1),
+                (2, 2),
+                (3, 3),
+            ],
+        ),
+        (
+            (9, 7),
+            (7, 9),
+            [
+                (9, 7),
+                (8, 8),
+                (7, 9),
+            ],
+        ),
     ],
 )
 def test_cover_points(p1, p2, expected_cover_points):
-    assert get_cover_points(p1, p2) == expected_cover_points
+    for point in get_cover_points(p1, p2):
+        assert point in expected_cover_points
 
 
 def test_diagram():
@@ -50,4 +68,9 @@ def test_overlapping():
 
 def test_part1():
     input = read_file("example.txt")
-    assert get_overlaps(input) == 5
+    assert get_overlaps(input, allow_diagonals=False) == 5
+
+
+def test_part2():
+    input = read_file("example.txt")
+    assert get_overlaps(input, allow_diagonals=True) == 12
