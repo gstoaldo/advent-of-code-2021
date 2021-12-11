@@ -43,3 +43,8 @@ def test_step():
 def test_part1():
     input = parse("example.txt")
     assert run_steps(input, 100) == 1656
+
+
+def test_part2():
+    input = parse("example.txt")
+    assert first_full_flash(input) == 195

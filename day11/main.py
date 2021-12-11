@@ -57,6 +57,24 @@ def is_in_matrix(matrix, i, j):
 ###
 
 
+def first_full_flash(states):
+    step_index = 0
+
+    while not is_zero_energy(states):
+        new_states, _ = step(states)
+        step_index += 1
+        states = new_states
+
+    return step_index
+
+
+def is_zero_energy(states):
+    return sum(sum(x for x in row) for row in states) == 0
+
+
+###
+
+
 def parse(filename):
     def parse_line(line):
         return [int(x) for x in line.strip()]
@@ -70,7 +88,7 @@ def parse(filename):
 def solve(filename):
     input = parse(filename)
     part1 = run_steps(input, 100)
-    part2 = None  # get_largest_basins(input)
+    part2 = first_full_flash(input)
 
     return part1, part2
 
