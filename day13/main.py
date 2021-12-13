@@ -34,6 +34,28 @@ def solve_part1(dots, folds):
     return count_unique_dots(run_folds(dots, folds[:1]))
 
 
+def print_dots(dots):
+    width = max(x for x, _ in dots) + 1
+    height = max(y for _, y in dots) + 1
+
+    matrix = []
+
+    for i in range(height):
+        matrix.append([])
+        for _ in range(width):
+            matrix[i].append(" ")
+
+    for x, y in dots:
+        matrix[y][x] = "#"
+
+    for row in matrix:
+        print("".join(row))
+
+
+def solve_part2(dots, folds):
+    return run_folds(dots, folds)
+
+
 ###
 
 
@@ -57,8 +79,8 @@ def parse(filename):
 
 def solve(filename):
     dots, folds = parse(filename)
-    part1 = solve_part1(dots, folds)  # run_steps(input, 100)
-    part2 = None  # first_full_flash(input)
+    part1 = solve_part1(dots, folds)
+    part2 = solve_part2(dots, folds)
 
     return part1, part2
 
@@ -66,4 +88,5 @@ def solve(filename):
 if __name__ == "__main__":
     part1, part2 = solve("input.txt")
     print(f"part1: {part1}")
-    print(f"part2: {part2}")
+    print("part2:")
+    print_dots(part2)
