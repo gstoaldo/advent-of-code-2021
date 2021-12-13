@@ -90,3 +90,13 @@ def test_part1():
     graph = parse("big-example.txt")
     paths = get_paths(graph)
     assert len(paths) == 226
+
+
+def test_part2():
+    graph = parse("medium-example.txt")
+    paths = run_part2(graph)
+    assert paths == 103
+
+    graph = parse("big-example.txt")
+    paths = run_part2(graph)
+    assert paths == 3509
