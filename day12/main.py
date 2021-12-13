@@ -1,41 +1,28 @@
 from collections import defaultdict
 
 
-def get_paths2(graph):
-    paths = []
-    to_visit = []
-    visited = set()
-    cave = "start"
+def get_paths(graph):
+    paths = [["start"]]
 
-    while len(to_visit) > 0:
-        path = []
-        while cave != "end":
-            path.append(cave)
-            to_visit = graph[cave]
-            cave = to_visit.pop()
+    while any(path[-1] != "end" for path in paths):
+        new_paths = []
 
-        paths.append(path)
+        for path in paths:
+            head = path[-1]
 
-    return paths
+            if head == "end":
+                new_paths.append(path)
+                continue
 
+            caves = graph[head]
 
-def get_paths(graph, start="start", visited=set()):
-    paths = []
+            for cave in caves:
+                if is_small(cave) and cave in path:
+                    continue
 
-    if start == "end":
-        return [["end"]]
+                new_paths.append([*path, cave])
 
-    visited.add(start)
-
-    for cave in graph[start]:
-
-        print(cave, paths, visited)
-
-        if is_small(cave) and cave in visited:
-            continue
-
-        for path in get_paths(graph, cave, visited):
-            paths.append([start, *path])
+        paths = new_paths
 
     return paths
 
@@ -61,13 +48,13 @@ def parse(filename):
 
 def solve(filename):
     input = parse(filename)
-    part1 = get_paths(input)  # run_steps(input, 100)
-    part2 = None  # first_full_flash(input)
+    part1 = len(get_paths(input))
+    part2 = None
 
     return part1, part2
 
 
 if __name__ == "__main__":
-    part1, part2 = solve("example.txt")
+    part1, part2 = solve("input.txt")
     print(f"part1: {part1}")
     print(f"part2: {part2}")
