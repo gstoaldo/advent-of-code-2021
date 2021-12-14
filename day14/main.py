@@ -16,7 +16,6 @@ def step(template, pairs):
     trios = []
     for i in range(len(template) - 1):
         trios.append(get_trio(template, pairs, i))
-
     return merge_trios(trios)
 
 
@@ -48,6 +47,70 @@ def solve_part1(initial_template, pairs):
 ###
 
 
+def count_pairs(template, pairs):
+    count = {pair: 0 for pair in pairs}
+
+    for i in range(len(template) - 1):
+        pair = template[i : i + 2]
+        count[pair] += 1
+
+    return count
+
+
+def step_optimized(initial_pair_count, pairs):
+    pair_count = {pair: 0 for pair in pairs}
+
+    for pair, count in initial_pair_count.items():
+        insert_element = pairs[pair]
+        left_pair = pair[0] + insert_element
+        right_pair = insert_element + pair[1]
+
+        pair_count[left_pair] += count
+        pair_count[right_pair] += count
+
+    return pair_count
+
+
+def steps_optimized(initial_template, pairs, nsteps):
+    pair_count = count_pairs(initial_template, pairs)
+
+    for _ in range(nsteps):
+        pair_count = step_optimized(pair_count, pairs)
+
+    return pair_count
+
+
+def count_chars(pair_count):
+    chars_count = defaultdict(lambda: 0)
+
+    for pair, count in pair_count.items():
+        chars_count[pair[0]] += count
+        chars_count[pair[1]] += count
+
+    return chars_count
+
+
+def solve_part2(initial_template, pairs):
+    start_char = initial_template[0]
+    end_char = initial_template[-1]
+
+    pair_count = steps_optimized(initial_template, pairs, 40)
+
+    chars_count = count_chars(pair_count)
+
+    chars_count[start_char] += 1
+    chars_count[end_char] += 1
+
+    merged_chars_count = {
+        char: count // 2 for char, count in chars_count.items()
+    }.values()
+
+    return max(merged_chars_count) - min(merged_chars_count)
+
+
+###
+
+
 def parse(filename):
     def parse_rules(line):
         pair, element = line.split("->")
@@ -66,7 +129,7 @@ def parse(filename):
 def solve(filename):
     template, rules = parse(filename)
     part1 = solve_part1(template, rules)
-    part2 = None  # solve_part2(dots, folds)
+    part2 = solve_part2(template, rules)
 
     return part1, part2
 

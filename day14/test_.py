@@ -37,3 +37,39 @@ def test_count_elements():
 def test_part1():
     template, pairs = parse("example.txt")
     assert solve_part1(template, pairs) == 1588
+
+
+###
+
+
+def test_count_pairs():
+    assert count_pairs("NNCB", {"NN": "C", "NC": "B", "CB": "H"}) == {
+        "NN": 1,
+        "NC": 1,
+        "CB": 1,
+    }
+
+
+def test_step_optimized():
+    template, pairs = parse("example.txt")
+    count = step_optimized(count_pairs(template, pairs), pairs)
+    assert count["NC"] == 1
+    assert count["CN"] == 1
+    assert count["NB"] == 1
+    assert count["BC"] == 1
+    assert count["CH"] == 1
+    assert count["HB"] == 1
+
+    count = step_optimized(count_pairs("NNNN", pairs), pairs)
+    assert count["NC"] == 3
+    assert count["CN"] == 3
+    assert count["NN"] == 0
+
+
+def test_count_chars():
+    assert count_chars({"NC": 3, "CN": 3}) == {"N": 6, "C": 6}
+
+
+def test_part2():
+    template, pairs = parse("example.txt")
+    assert solve_part2(template, pairs) == 2188189693529
