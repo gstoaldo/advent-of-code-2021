@@ -57,7 +57,7 @@ def remove_riskier_paths(matrix, risks, paths):
 def solve_part1(matrix):
     path = get_path(matrix)
 
-    print_path(matrix, path)
+    # print_path(matrix, path)
 
     return get_path_risk(matrix, path)
 
@@ -65,6 +65,31 @@ def solve_part1(matrix):
 def print_path(matrix, path):
     for i, row in enumerate(matrix):
         print([f" {x} " if (i, j) not in path else f"({x})" for j, x in enumerate(row)])
+
+
+###
+
+
+def full_matrix(initial_matrix, n_times=5, max_risk=9):
+    hi = len(initial_matrix)
+    wi = len(initial_matrix[0])
+    h = hi * n_times
+    w = wi * n_times
+    full_matrix = [[0 for _ in range(w)] for _ in range(h)]
+
+    for i, row in enumerate(full_matrix):
+        ni = i // hi
+        for j, _ in enumerate(row):
+            nj = j // wi
+
+            x = initial_matrix[i % hi][j % wi]
+
+            hor_x = (x + nj) - ((x + nj - 1) // max_risk) * (max_risk)
+            ver_x = (hor_x + ni) - (hor_x + ni - 1) // max_risk * max_risk
+
+            full_matrix[i][j] = ver_x
+
+    return full_matrix
 
 
 ###
@@ -78,7 +103,7 @@ def parse(filename):
 def solve(filename):
     matrix = parse(filename)
     part1 = solve_part1(matrix)
-    part2 = None  # solve_part2(template, rules)
+    part2 = solve_part1(full_matrix(matrix, 5))
 
     return part1, part2
 
