@@ -35,3 +35,24 @@ def test_paths(matrix, start, end, expected):
 def test_part1():
     matrix = parse("example.txt")
     assert solve_part1(matrix) == 40
+
+
+def test_full_matrix():
+    sample = [[8]]
+    fm = full_matrix(sample)
+
+    for row in fm:
+        print(row)
+
+    assert fm == [
+        [8, 9, 1, 2, 3],
+        [9, 1, 2, 3, 4],
+        [1, 2, 3, 4, 5],
+        [2, 3, 4, 5, 6],
+        [3, 4, 5, 6, 7],
+    ]
+
+
+def test_part2():
+    matrix = parse("example.txt")
+    assert solve_part1(full_matrix(matrix)) == 315
