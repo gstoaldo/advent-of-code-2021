@@ -46,11 +46,11 @@ def hits_target(vx0, vy0, target, x0=0, y0=0):
         t += 1
 
 
-def throw_with_style(target, max_vx0=400, max_vy0=400):
-    _, ty = target
+def throw_with_style(target, max_vy0=100):
+    tx, ty = target
     throws = []
-    for vx0 in range(max_vx0):
-        for vy0 in range(min(ty), max_vy0):
+    for vx0 in range(max(tx) + 1):
+        for vy0 in range(min(ty) - 1, max_vy0):
             hits, max_y = hits_target(vx0, vy0, target)
 
             if hits:

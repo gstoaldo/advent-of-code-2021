@@ -75,4 +75,4 @@ def test_hits_target(vx0, vy0, target, expected):
     ],
 )
 def test_throw_with_style(target, expected):
-    assert throw_with_style(target, 100, 100) == expected
+    assert throw_with_style(target, 10) == expected
