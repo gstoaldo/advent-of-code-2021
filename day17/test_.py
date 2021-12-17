@@ -71,8 +71,8 @@ def test_hits_target(vx0, vy0, target, expected):
 @pytest.mark.parametrize(
     "target, expected",
     [
-        (((20, 30), (-5, -10)), 45),
+        (((20, 30), (-5, -10)), (45, 112)),
     ],
 )
 def test_throw_with_style(target, expected):
-    assert throw_with_style(target) == expected
+    assert throw_with_style(target, 100, 100) == expected

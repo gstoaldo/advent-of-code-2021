@@ -46,25 +46,24 @@ def hits_target(vx0, vy0, target, x0=0, y0=0):
         t += 1
 
 
-def throw_with_style(target, max_vx0=200, max_vy0=200):
+def throw_with_style(target, max_vx0=400, max_vy0=400):
+    _, ty = target
     throws = []
     for vx0 in range(max_vx0):
-        for vy0 in range(max_vy0):
+        for vy0 in range(min(ty), max_vy0):
             hits, max_y = hits_target(vx0, vy0, target)
 
             if hits:
                 throws.append(max_y)
 
-    return max(throws)
+    return max(throws), len(throws)
 
 
 ###
 
 
 def solve(target):
-    part1 = throw_with_style(target)
-    part2 = None  # solve_part1(full_matrix(matrix, 5))
-
+    part1, part2 = throw_with_style(target)
     return part1, part2
 
 
