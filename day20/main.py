@@ -3,7 +3,7 @@ LIGHT = "#"
 
 BINARY = {DARK: "0", LIGHT: "1"}
 
-###
+
 def add_margin(initial_img, margin=3, filler=DARK):
     height = len(initial_img) + 2 * margin
     width = len(initial_img[0]) + 2 * margin
@@ -57,9 +57,13 @@ def enhance(img, alg):
 
 
 def process(img, alg, n):
-    img = add_margin(img, 3 * n)
-    for _ in range(n):
+    img = add_margin(img, 6 * n)
+    for i in range(n):
         img = enhance(img, alg)
+        img = trim(img)
+
+        # for row in img:
+        #     print("".join(row))
 
     return img
 
@@ -68,16 +72,14 @@ def count_light_pixels(img):
     return sum(sum(1 for pixel in row if pixel == LIGHT) for row in img)
 
 
-def solve_part1(alg, img):
-    img = process(img, alg, 2)
+def solve_part1(alg, img, n=2):
+    img = process(img, alg, n)
 
-    for row in img:
-        print("".join(row))
+    return count_light_pixels(img)
 
-    count = count_light_pixels(img)
 
-    # fix count, the fist row and first column are transformed to light pixels using the input alg
-    return count - len(img) - len(img[0]) + 3
+def trim(img):
+    return [row[1:] for row in img[1:]]
 
 
 ###
@@ -95,8 +97,8 @@ def parse(filename):
 def solve(filename):
     alg, img = parse(filename)
 
-    part1 = solve_part1(alg, img)
-    part2 = None  # solve_part2(template, rules)
+    part1 = solve_part1(alg, img, n=2)
+    part2 = solve_part1(alg, img, n=50)
 
     return part1, part2
 
