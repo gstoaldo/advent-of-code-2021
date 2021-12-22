@@ -1,3 +1,6 @@
+### part1 naive
+
+
 def range_to_cuboid(cuboid_range):
     cuboid = []
     rx, ry, rz = cuboid_range
@@ -35,6 +38,72 @@ def solve_part1(steps):
     return len(run_steps(steps))
 
 
+### part2
+
+
+def get_1D_intersection(range_a, range_b):
+    x1a, x2a = range_a
+    x1b, x2b = range_b
+
+    x1 = max(x1a, x1b)
+    x2 = min(x2a, x2b)
+
+    return (x1, x2) if x2 >= x1 else False
+
+
+def get_3D_intersection(range_a, range_b):
+    intersection_3D = []
+
+    for ra, rb in zip(range_a, range_b):
+        intersection_1D = get_1D_intersection(ra, rb)
+
+        if not intersection_1D:
+            return False
+
+        intersection_3D.append(intersection_1D)
+
+    return intersection_3D
+
+
+def run_steps2(steps):
+    on_cuboides = []
+    off_cuboides = []
+
+    for state, step_cuboid in steps:
+        off_copy = [*off_cuboides]
+        on_copy = [*on_cuboides]
+        for cuboid in off_copy:
+            intersection = get_3D_intersection(step_cuboid, cuboid)
+
+            if intersection:
+                on_cuboides.append(intersection)
+
+        for cuboid in on_copy:
+            intersection = get_3D_intersection(step_cuboid, cuboid)
+
+            if intersection:
+                off_cuboides.append(intersection)
+
+        if state == "on":
+            on_cuboides.append(step_cuboid)
+
+    return on_cuboides, off_cuboides
+
+
+def count_cubes(cuboid):
+    product = 1
+    for dim in cuboid:
+        product *= dim[1] - dim[0] + 1
+
+    return product
+
+
+def solve_part2(steps):
+    on_cuboides, off_cuboides = run_steps2(steps)
+
+    return sum(map(count_cubes, on_cuboides)) - sum(map(count_cubes, off_cuboides))
+
+
 ###
 
 
@@ -55,7 +124,7 @@ def parse(filename):
 def solve(filename):
     steps = parse(filename)
     part1 = solve_part1(steps)
-    part2 = None  # solve_part1(full_matrix(matrix, 5))
+    part2 = solve_part2(steps)
 
     return part1, part2
 
